@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 
 const verifyToken = (req, res, next) => {
     // cek token apakah ada di header atau tidak
-    const authHeader = req.header['authorization'];
+    const authHeader = req.headers['authorization'];
 
     if (!authHeader) {
         return res.status(403).json({
@@ -10,7 +10,7 @@ const verifyToken = (req, res, next) => {
         });
     }
 
-    const token = authHeader.split('')[1]; // Bearer Token jadi Token saja
+    const token = authHeader.split(' ')[1]; // Bearer Token jadi Token saja
 
     try {
         const decoded = jwt.verify(token, 'Kunci_Rahasia'); // KunciRahasia harus sama persis saat login
@@ -23,4 +23,4 @@ const verifyToken = (req, res, next) => {
     }
 }
 
-module.exports = { verifyToken };
+module.exports = verifyToken;
