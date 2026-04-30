@@ -42,9 +42,10 @@ app.post('/api/register', async (req, res) => {
             data: { name: newUser.name, email: newUser.email }
         });
     } catch (error) {
-        console.log(error);
+        console.error("ERROR REGISTRASI:", error);
         res.status(500).json({
-            message: 'Gagal register, mungkin email sudah terdaftar!'
+            message: 'Gagal register!',
+            error: error.message
         });
     }
 });

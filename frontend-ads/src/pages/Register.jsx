@@ -29,6 +29,7 @@ export default function Register() {
             alert('Registrasi berhasil! Silakan login.');
             navigate('/login');
         } catch (error) {
+            console.error("Gagal Registrasi:", error.response?.data || error.message);
             alert(error.response?.data?.message || 'Gagal registrasi! Coba lagi.');
         } finally {
             setIsLoading(false);
