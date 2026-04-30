@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import axios from 'axios';
 
 export default function Login() {
@@ -41,14 +41,14 @@ export default function Login() {
 
                 <form onSubmit={handleLogin} className="space-y-5">
                     <div>
-                        <label className="block text-sm font-medium text-gray-700 mb-1">Email Dummy HRD</label>
+                        <label className="block text-sm font-medium text-gray-700 mb-1">Username/Email</label>
                         <input
                             type="email"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
                             required
                             className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                            placeholder="test@gmail.com"
+                            placeholder="Masukan email atau username Anda"
                         />
                     </div>
                     <div>
@@ -59,7 +59,7 @@ export default function Login() {
                             onChange={(e) => setPassword(e.target.value)}
                             required
                             className="w-full border border-gray-300 px-4 py-2 rounded-lg focus:ring-2 focus:ring-indigo-500 outline-none"
-                            placeholder="password123"
+                            placeholder="Masukan password Anda"
                         />
                     </div>
                     <button
@@ -70,6 +70,13 @@ export default function Login() {
                         {isLoading ? 'Mengecek Kunci...' : 'Masuk Sekarang'}
                     </button>
                 </form>
+
+                <p className="text-center text-sm text-gray-500 mt-6">
+                    Belum punya akun?{' '}
+                    <Link to="/register" className="text-indigo-600 font-semibold hover:underline">
+                        Daftar di sini
+                    </Link>
+                </p>
             </div>
         </div>
     );
