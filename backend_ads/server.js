@@ -12,7 +12,7 @@ const PORT = process.env.PORT;
 
 // AI Gemini Configuration
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
-console.log("Kunci Gemini Terdeteksi:", process.env.GEMINI_API_KEY ? "YA" : "TIDAK");
+console.log("Status Gemini API:", process.env.GEMINI_API_KEY ? "AKTIF" : "TIDAK AKTIF");
 
 app.use(cors());
 app.use(express.json());
@@ -74,7 +74,7 @@ app.post('/api/login', async (req, res) => {
         const token = jwt.sign({
             id: user.id,
             email: user.email
-        }, 'Kunci_Rahasia', { expiresIn: '1h' });
+        }, process.env.JWT_SECRET || 'Kunci_Rahasia_Default', { expiresIn: '24h' });
 
         res.json({
             message: "Login berhasil, selamat datang!",
@@ -155,7 +155,7 @@ app.post('/api/campaigns', verifyToken, async (req, res) => {
         });
 
     } catch (error) {
-        console.error("Gagal menganalisa data: ", error);
+        console.error("Gagal menganalisa data AI: ", error.message);
         res.status(500).json({
             message: "Terjadi kesalahan pada AI atau server.",
             error: error.message

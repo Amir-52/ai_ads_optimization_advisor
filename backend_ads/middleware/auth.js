@@ -13,7 +13,7 @@ const verifyToken = (req, res, next) => {
     const token = authHeader.split(' ')[1]; // Bearer Token jadi Token saja
 
     try {
-        const decoded = jwt.verify(token, 'Kunci_Rahasia'); // KunciRahasia harus sama persis saat login
+        const decoded = jwt.verify(token, process.env.JWT_SECRET || 'Kunci_Rahasia_Default'); // Harus sama dengan secret saat login
         req.user = decoded; // menyimpan data user ke request
         next(); // Silahkan lewat!
     } catch (error) {
