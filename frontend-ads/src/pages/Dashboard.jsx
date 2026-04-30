@@ -26,7 +26,7 @@ export default function Dashboard() {
 
     const fetchCampaigns = async () => {
         try {
-            const res = await axios.get('http://localhost:5000/api/campaigns', {
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/campaigns`, {
                 headers: { Authorization: `Bearer ${getToken()}` }
             });
             setCampaigns(res.data.data);
@@ -43,7 +43,7 @@ export default function Dashboard() {
         e.preventDefault();
         setIsGenerating(true);
         try {
-            await axios.post('http://localhost:5000/api/campaigns', formData, {
+            await axios.post(`${import.meta.env.VITE_API_URL}/api/campaigns`, formData, {
                 headers: { Authorization: `Bearer ${getToken()}` }
             });
             alert('Berhasil dianalisa oleh Gemini AI!');
