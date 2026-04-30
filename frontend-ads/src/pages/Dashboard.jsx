@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react'; // Tambahkan useCallback
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -7,14 +7,30 @@ export default function Dashboard() {
     const [campaigns, setCampaigns] = useState([]);
     const [isGenerating, setIsGenerating] = useState(false);
 
-    // State Form disesuaikan pakai garis bawah (_) dan tambah language
     const [formData, setFormData] = useState({
         campaign_name: '', platform: 'Facebook Ads', impressions: '',
         clicks: '', conversions: '', spend: '', start_date: '', end_date: '', language: 'en'
     });
 
-    const getToken = () => localStorage.getItem('token');
+    const getToken = useCallback(() => localStorage.getItem('token'), []);
 
+    // 1. Definisikan fetchCampaigns TERLEBIH DAHULU sebelum digunakan
+    // Pakai useCallback agar tidak menyebabkan loop pada useEffect
+    const fetchCampaigns = useCallback(async () => {
+        try {
+            const token = getToken();
+            if (!token) return;
+
+            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/campaigns`, {
+                headers: { Authorization: `Bearer ${token}` }
+            });
+            setCampaigns(res.data.data);
+        } catch (err) {
+            console.error("Gagal tarik data", err);
+        }
+    }, [getToken]);
+
+    // 2. useEffect sekarang aman memanggil fetchCampaigns
     useEffect(() => {
         const token = getToken();
         if (!token) {
@@ -22,18 +38,7 @@ export default function Dashboard() {
             return;
         }
         fetchCampaigns();
-    }, [navigate]);
-
-    const fetchCampaigns = async () => {
-        try {
-            const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/campaigns`, {
-                headers: { Authorization: `Bearer ${getToken()}` }
-            });
-            setCampaigns(res.data.data);
-        } catch (error) {
-            console.error("Gagal tarik data", error);
-        }
-    };
+    }, [navigate, getToken, fetchCampaigns]); // Tambahkan dependensi lengkap
 
     const handleChange = (e) => {
         setFormData({ ...formData, [e.target.name]: e.target.value });
@@ -48,10 +53,10 @@ export default function Dashboard() {
             });
             alert('Berhasil dianalisa oleh Gemini AI!');
             fetchCampaigns();
-            // Kosongkan form setelah sukses (bahasa jangan dikosongkan)
             setFormData({ ...formData, campaign_name: '', impressions: '', clicks: '', conversions: '', spend: '' });
-        } catch (error) {
+        } catch (err) { // Ubah 'error' jadi 'err' atau hapus jika tidak dipakai
             alert('Gagal menganalisa. Cek koneksi backend/AI.');
+            console.error(err);
         } finally {
             setIsGenerating(false);
         }
